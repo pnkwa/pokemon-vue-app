@@ -12,6 +12,7 @@ const offset = ref(0);
 const limit = 9;
 
 const scrollContainer = ref<HTMLElement | null>(null);
+const selectedType = ref<TypeOption | null>(null);
 
 const loadMorePokemon = async () => {
   if (loading.value) return;
@@ -20,8 +21,6 @@ const loadMorePokemon = async () => {
   offset.value += limit;
   loading.value = false;
 };
-
-const selectedType = ref<TypeOption | null>(null);
 
 const selectedTypeLabel = computed(() => selectedType.value?.label || "All");
 
@@ -46,17 +45,15 @@ const handleScroll = () => {
   const nearBottom =
     container.scrollTop + container.clientHeight >= container.scrollHeight - 10;
 
-  if (nearBottom) {
-    loadMorePokemon();
-  }
+  if (nearBottom) loadMorePokemon();
 };
 
-onMounted(async () => {
-  await loadMorePokemon();
+onMounted(() => {
+  loadMorePokemon();
 });
 
-watch(selectedType, async () => {
-  await filterByType();
+watch(selectedType, () => {
+  filterByType();
 });
 </script>
 
@@ -89,7 +86,7 @@ watch(selectedType, async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .app-container {
   height: 100vh;
   display: flex;
