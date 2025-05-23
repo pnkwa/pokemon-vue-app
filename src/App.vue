@@ -6,20 +6,27 @@ import CircularProgress from "./components/CircularProgress.vue";
 import SelectFilter, { type TypeOption } from "./components/SelectFilter.vue";
 import PokemonLogo from "./assets/pokemon-23.svg";
 
+const LIMIT = 9;
+
 const pokemons = ref<{ name: string; image: string }[]>([]);
 const loading = ref(false);
 const offset = ref(0);
-const limit = 9;
 
-const scrollContainer = ref<HTMLElement | null>(null);
-const selectedType = ref<TypeOption | null>(null);
+const scrollContainer = ref<HTMLElement>();
+const selectedType = ref<TypeOption>();
 
 const loadMorePokemon = async () => {
   if (loading.value) return;
-  loading.value = true;
-  await fetchPokemon(pokemons, offset.value, limit);
-  offset.value += limit;
-  loading.value = false;
+  try {
+    loading.value = true;
+    const resPokemon = await fetchPokemon(offset.value, LIMIT);
+    pokemons.value.push(...resPokemon);
+    offset.value += LIMIT;
+  } catch (error) {
+    console.error("Error loading more Pokémon:", error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const selectedTypeLabel = computed(() => selectedType.value?.label || "All");
@@ -41,7 +48,6 @@ const filterByType = async () => {
 const handleScroll = () => {
   const container = scrollContainer.value;
   if (!container) return;
-
   const nearBottom =
     container.scrollTop + container.clientHeight >= container.scrollHeight - 10;
 
@@ -51,17 +57,20 @@ const handleScroll = () => {
 onMounted(() => {
   loadMorePokemon();
 });
-
-watch(selectedType, () => {
-  filterByType();
-});
 </script>
 
 <template>
   <div class="app-container">
     <header class="sticky-header">
       <img :src="PokemonLogo" alt="Pokémon Logo" class="pokemon-logo" />
-      <SelectFilter v-model:type="selectedType" />
+      <SelectFilter
+        v-model="selectedType"
+        @update:model-value="
+          () => {
+            filterByType();
+          }
+        "
+      />
 
       <p>Filtering by: {{ selectedTypeLabel }}</p>
     </header>
@@ -86,7 +95,7 @@ watch(selectedType, () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .app-container {
   height: 100vh;
   display: flex;

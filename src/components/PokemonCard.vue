@@ -12,7 +12,7 @@ const props = defineProps<{
   </div>
 </template>
 
-<style>
+<style scoped>
 .card {
   width: 250px;
   background-color: #fff8dc;

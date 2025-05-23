@@ -7,26 +7,15 @@ export type TypeOption = {
   color: string;
 };
 
-const props = defineProps<{
-  type: TypeOption | null;
-}>();
+export type SelectFilterProps = {
+  modelValue?: TypeOption;
+};
+
+const props = defineProps<SelectFilterProps>();
 
 const emit = defineEmits<{
-  (e: "update:type", value: TypeOption | null): void;
+  (e: "update:modelValue", value: SelectFilterProps["modelValue"]): void;
 }>();
-
-const modelSingle = ref<TypeOption | null>(props.type);
-
-watch(modelSingle, (val) => {
-  emit("update:type", val);
-});
-
-watch(
-  () => props.type,
-  (val) => {
-    modelSingle.value = val;
-  }
-);
 
 const options: TypeOption[] = [
   { label: "Normal", value: 1, color: "grey" },
@@ -54,7 +43,12 @@ const options: TypeOption[] = [
   <div class="q-pa-md q-mb-md">
     <q-select
       filled
-      v-model="modelSingle"
+      :model-value="props.modelValue"
+      @update:model-value="
+        (val) => {
+          emit('update:modelValue', val);
+        }
+      "
       :options="options"
       use-chips
       stack-label
