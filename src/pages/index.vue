@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from "vue";
-import PokemonCard from "./components/PokemonCard.vue";
-import { fetchPokemon, fetchPokemonByType } from "./services/pokemonApi";
-import CircularProgress from "./components/CircularProgress.vue";
-import SelectFilter, { type TypeOption } from "./components/SelectFilter.vue";
-import PokemonLogo from "./assets/pokemon-23.svg";
+import { ref, onMounted, computed } from "vue";
+import PokemonCard from "@/components/PokemonCard.vue";
+import { fetchPokemon, fetchPokemonByType } from "@/services/pokemonApi";
+import CircularProgress from "@/components/CircularProgress.vue";
+import SelectFilter, { type TypeOption } from "@/components/SelectFilter.vue";
+import PokemonLogo from "@/assets/pokemon-23.svg";
 
 const LIMIT = 9;
 

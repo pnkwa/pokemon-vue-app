@@ -12,11 +12,15 @@ import "quasar/src/css/index.sass";
 // Assumes your root component is App.vue
 // and placed in same folder as main.js
 import App from "@/App.vue";
-import { createMemoryHistory, createRouter } from "vue-router";
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHistory,
+} from "vue-router";
 import { routes } from "./configs/router";
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 });
 
